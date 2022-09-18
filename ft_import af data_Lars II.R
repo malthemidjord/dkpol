@@ -6,7 +6,7 @@
 require(tidyverse)
 require(xml2)
 
-my_files <- list.files("C:/Users/malth/OneDrive/Malthe/ft/filer", full.names = TRUE)
+my_files <- list.files("C:/Users/malth/OneDrive/Malthe/ft/filer/Lars L II 062015-112016", full.names = TRUE)
 
 read_my_xml <- function(x) {
   doc <- read_xml(x)
@@ -45,4 +45,27 @@ dat <- dat[!(dat$Fornavn ==""),]
 dat <- dat[!(dat$Fornavn =="Pause"),]
 
 
-write.csv(dat,"C:/Users/malth/OneDrive/Malthe/ft/MetteF_regering (06.2019 - 06.2022)", row.names = FALSE)
+navn <- unique(dat$Fuldenavn)
+unikkenavne_lars_II <- data.frame(navn)
+write.csv(unikkenavne_lars_II, "C:/Users/malth/OneDrive/Malthe/ft/Data/unikkenavne_lars_II", row.names = FALSE)
+
+navn_køn <- read.csv("C:/Users/malth/OneDrive/Malthe/ft/Data/navn_kn_lars II.csv", sep = ";")
+dat <- merge(dat,navn_køn,by="Fuldenavn")
+dat$Partibogstav[dat$Rolle == 'minister' |
+                    dat$Rolle == 'fungerende minister' |
+                    dat$Fuldenavn == 'Lars Løkke Rasmussen'] <- 'V'
+dat$Rolle[dat$Rolle == 'fungerende minister'] <- 'minister'
+
+
+
+blok <- c("", "", "Blå", "Blå", "Blå", "Blå", "Rød", "Rød", "", "Rød",
+          "Rød", "Rød", "", "", "")
+
+Partibogstav <- c("UFG", "SIU", "DF",  "KF",  "V",   "LA",  "RV",  "S",
+                  "",    "ALT", "EL",  "SF",  "T",   "JF",  "IA")
+
+
+parti_blok <- data.frame(Partibogstav, blok)
+dat <- merge(dat, parti_blok,by="Partibogstav")
+
+write.csv(dat,"C:/Users/malth/OneDrive/Malthe/ft/Data/Lars L regering II (06.2015 - 11.2016)", row.names = FALSE)
